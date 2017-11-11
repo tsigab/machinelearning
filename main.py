@@ -1,9 +1,10 @@
-import id3_tree
+from sklearn.utils import shuffle
+from collections import Counter, defaultdict
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from tabulate import tabulate
-from collections import Counter, defaultdict
+import id3_tree
 
 def findPath(graph ,start , end, pathSoFar):
     
@@ -91,16 +92,37 @@ def make_tree(data, classes, feature_names):
 
 def main():
     
-    filename = "mushroomTest.csv"
+    filename = "mushroom.csv"
     
     idtree = id3_tree.id3_tree()
     data, classes, feature_names = idtree.read_data(filename)
     
+    print data[1:5]
+    print classes[1:5]
+
+    np.random.seed(750)
+    data, classes = shuffle(data, classes, random_state = 0)
+   
+    print data[1:5]
+    print classes[1:5]
+
+
+    ntrain = int(0.75 * np.shape(data)[0])
+   
+    train_data = data[:ntrain]
+    test_data = data[ntrain:]
+    train_classes = classes[:ntrain]
+    test_classes = classes[ntrain:]
+    print np.shape(train_data), np.shape(test_data)
+    
+
+    print "The data split into train data and validataion :", np.shape(train_data)
+    print np.shape(test_data)
     mushroom_feat_infogain = []
     feature = np.shape(feature_names)[0]
     feature_entropy = []  
     for i in range(feature):
-        feature_entropy= idtree.calc_information_gain(data, classes, i)
+        feature_entropy = idtree.calc_information_gain(train_data, train_classes, i)
     
     for i in range(feature):
     		mushroom_feat_infogain.append([feature_names[i],feature_entropy[i]])
@@ -109,14 +131,18 @@ def main():
     print  tabulate(mushroom_feat_infogain, headers=("Feature Name", "Information Gain"),
 		tablefmt="orgtbl")
 
-    mtree =idtree.make_tree(data, classes, feature_names)
+    mtree =idtree.make_tree(train_data, train_classes, feature_names)
     idtree.printTree(mtree, ' ')
-    print idtree.classifyAll(mtree, data)
 
-    for i in range(len(data)):
-       classified = idtree.classify(mtree, data[i])
     
-    print classified
+    aclass= idtree.classifyAll(mtree, test_data)
+
+    for i in range(len(test_data)):
+       classified = idtree.classify(mtree, test_data[i])
+    
+    print np.shape(classified)
+
+    print np.diff(classified,test_classes)
 
 
           
