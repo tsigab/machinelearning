@@ -97,26 +97,23 @@ def main():
     idtree = id3_tree.id3_tree()
     data, classes, feature_names = idtree.read_data(filename)
     
-    print data[1:5]
-    print classes[1:5]
-
+    
     np.random.seed(750)
     data, classes = shuffle(data, classes, random_state = 0)
    
-    print data[1:5]
-    print classes[1:5]
+ 
 
-
-    ntrain = int(0.75 * np.shape(data)[0])
+    ntrain = int(0.15 * np.shape(data)[0])
+    ntest = int(0.25 * np.shape(data)[0])
    
     train_data = data[:ntrain]
     test_data = data[ntrain:]
     train_classes = classes[:ntrain]
-    test_classes = classes[ntrain:]
+    test_classes = classes[ntrain:ntest]
     print np.shape(train_data), np.shape(test_data)
     
 
-    print "The data split into train data and validataion :", np.shape(train_data)
+    print "The data split into train data and test :", np.shape(train_data)
     print np.shape(test_data)
     mushroom_feat_infogain = []
     feature = np.shape(feature_names)[0]
