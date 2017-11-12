@@ -107,7 +107,7 @@ def main():
     ntest = int(0.25 * np.shape(data)[0])
    
     train_data = data[:ntrain]
-    test_data = data[ntrain:]
+    test_data = data[ntrain:ntest]
     train_classes = classes[:ntrain]
     test_classes = classes[ntrain:ntest]
     print np.shape(train_data), np.shape(test_data)
