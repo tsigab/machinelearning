@@ -53,7 +53,7 @@ def make_tree(data, classes, feature_names):
         values = []
         feature=0
         for datapoint in data:
-            if datapoint[feature] not in values:
+            if datapoint[bestFeature] not in values:
                 values.append(datapoint[bestFeature])
             feature += 1
         for value in values:
@@ -103,18 +103,18 @@ def main():
    
  
 
-    ntrain = int(0.15 * np.shape(data)[0])
+    ntrain = int(0.75 * np.shape(data)[0])
     ntest = int(0.25 * np.shape(data)[0])
    
     train_data = data[:ntrain]
-    test_data = data[ntrain:ntest]
+    test_data = data[ntrain:]
     train_classes = classes[:ntrain]
-    test_classes = classes[ntrain:ntest]
-    print np.shape(train_data), np.shape(test_data)
+    test_classes = classes[ntrain:]
+    
     
 
     print "The data split into train data and test :", np.shape(train_data)
-    print np.shape(test_data)
+    print np.shape(test_data) ,np.shape(test_classes)
     mushroom_feat_infogain = []
     feature = np.shape(feature_names)[0]
     feature_entropy = []  
@@ -132,14 +132,31 @@ def main():
     idtree.printTree(mtree, ' ')
 
     
-    aclass= idtree.classifyAll(mtree, test_data)
+    predict= idtree.classifyAll(mtree, test_data)
+    diffValues = []
+    countE = 0
+    countP = 0
+    count = 0
+    numOccurrences = dict(Counter(test_classes))
+    print numOccurrences
 
-    for i in range(len(test_data)):
-       classified = idtree.classify(mtree, test_data[i])
+    for i in range(len(test_classes)):
+        if (predict[i] == test_classes[i] and predict[i]=='e'):
+            countE += 1
+        elif (predict[i] == test_classes[i] and predict[i]=='p'):
+            countP += 1
+        else:
+            count += 1
+
+    print countE, countP, count     
     
-    print np.shape(classified)
+    print len(predict) , len(test_classes)
+    for i in range(len(test_data)):
+        idtree.classify(mtree, test_data[i])
+    
+    #print np.size(classified)
 
-    print np.diff(classified,test_classes)
+    
 
 
           

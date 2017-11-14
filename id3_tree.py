@@ -112,7 +112,7 @@ class id3_tree:
 			# List the values that bestFeature can take
 			values = []
 			for datapoint in data:
-				if datapoint[feature] not in values:
+				if datapoint[bestFeature] not in values:
 					values.append(datapoint[bestFeature])
 			
 			for value in values:
