@@ -1,4 +1,7 @@
 from sklearn.utils import shuffle
+from sklearn.metrics import accuracy_score
+from pandas_confusion import ConfusionMatrix
+
 from collections import Counter, defaultdict
 import numpy as np
 import pandas as pd
@@ -104,7 +107,6 @@ def main():
  
 
     ntrain = int(0.75 * np.shape(data)[0])
-    ntest = int(0.25 * np.shape(data)[0])
    
     train_data = data[:ntrain]
     test_data = data[ntrain:]
@@ -113,7 +115,7 @@ def main():
     
     
 
-    print "The data split into train data and test :", np.shape(train_data)
+    print "The data split into train data: %s and test data %s:" % np.shape(train_data)
     print np.shape(test_data) ,np.shape(test_classes)
     mushroom_feat_infogain = []
     feature = np.shape(feature_names)[0]
@@ -126,40 +128,30 @@ def main():
     
     df = pd.DataFrame(mushroom_feat_infogain,columns=["Feature Name","Information Gain"])
     print  tabulate(mushroom_feat_infogain, headers=("Feature Name", "Information Gain"),
-		tablefmt="orgtbl")
+		tablefmt="orgtbl") + "\n \n \n "
 
     mtree =idtree.make_tree(train_data, train_classes, feature_names)
     idtree.printTree(mtree, ' ')
 
     
     predict= idtree.classifyAll(mtree, test_data)
-    diffValues = []
-    countE = 0
-    countP = 0
-    count = 0
-    numOccurrences = dict(Counter(test_classes))
-    print numOccurrences
+           
+  
 
-    for i in range(len(test_classes)):
-        if (predict[i] == test_classes[i] and predict[i]=='e'):
-            countE += 1
-        elif (predict[i] == test_classes[i] and predict[i]=='p'):
-            countP += 1
-        else:
-            count += 1
-
-    print countE, countP, count     
-    
-    print len(predict) , len(test_classes)
+    testClassifaictin = []
     for i in range(len(test_data)):
-        idtree.classify(mtree, test_data[i])
-    
-    #print np.size(classified)
+        testClassifaictin = np.append(testClassifaictin,idtree.classify(mtree, test_data[i]))
 
     
+    
 
+    
+    confusion_matrix = ConfusionMatrix(test_classes, predict)
+    print("Confusion matrix:\n\n%s" % confusion_matrix)
+    
 
-          
+    accuracyScore = accuracy_score(test_classes,predict)
+    print "Accurecy Score: %0.2f " % (accuracyScore*100) + "%"
 
 
 
