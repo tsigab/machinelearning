@@ -53,7 +53,7 @@ class id3_tree:
 			results.append(self.classify(tree, data[i]))
 		return results
 
-	def make_tree(self, data, classes, featureNames, maxlevel=-1, level=1, forest=0):
+	def make_tree(self, data, classes, featureNames, maxlevel=-1, level=0, forest=0):
 		""" The main function, which recursively constructs the tree"""
 
 		nData = len(data)
